@@ -20,10 +20,19 @@ export const PersonCard: React.FC<PersonCardProps> = ({ collaborator, department
   // Use the real photo when present; fallback to RoboHash deterministic seed
   const seed = encodeURIComponent(collaborator?.id ?? name);
   const photoUrl = collaborator?.photoUrl ?? `https://robohash.org/${seed}.png?size=150x150`;
-  const [imageOk, setImageOk] = React.useState(false); 
-  React.useEffect(() => { 
-    setImageOk(false); 
-  }, [photoUrl]); 
+  const [imageOk, setImageOk] = React.useState(false);
+  React.useEffect(() => {
+    let mounted = true;
+    setImageOk(false);
+    if (!photoUrl) return;
+    // Preload image to avoid missing the native <img onLoad> when the
+    // resource is cached or loads before the element's handler is attached.
+    const pre = new Image();
+    pre.src = photoUrl;
+    pre.onload = () => { if (mounted) setImageOk(true); };
+    pre.onerror = () => { if (mounted) setImageOk(false); };
+    return () => { mounted = false; };
+  }, [photoUrl]);
   const accentClass = department?.colorClass ?? 'bg-slate-300';
   const badgeClass  = department?.badgeClass  ?? 'bg-slate-100 text-slate-600';
 

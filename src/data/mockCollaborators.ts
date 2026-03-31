@@ -49,7 +49,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Ressources Humaines',
 		email: 'sophie.bernard@example.com',
 		managerId: 'c1',
-		directReportIds: ['c15'],
+		directReportIds: ['c15', 'c27'],
 	},
 	{
 		id: 'c5',

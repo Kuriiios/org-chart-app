@@ -39,7 +39,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       />
 
       {/* ── Body: sidebar + main ───────────────────────────────────────────── */}
-      <div className="flex flex-1 overflow-hidden max-w-[1400px] w-full mx-auto">
+      <div className="flex flex-1 overflow-hidden w-full">
         <aside className="w-64 shrink-0 bg-white border-r border-slate-200 pt-4 pb-4 pr-3 pl-0 overflow-y-auto">
           <Sidebar
             departments={departments}

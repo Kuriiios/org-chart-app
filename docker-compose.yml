@@ -1,0 +1,12 @@
+services:
+  frontend:
+    build:
+      context: .
+      target: development
+    ports:
+      - "3000:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - WATCHPACK_POLLING=true # Ensures hot-reload works on Windows

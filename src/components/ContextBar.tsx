@@ -12,7 +12,6 @@ interface ContextBarProps {
 }
 
 export const ContextBar: React.FC<ContextBarProps> = ({
-  activeView,
   selectedDepartmentId,
   departments,
 }) => {

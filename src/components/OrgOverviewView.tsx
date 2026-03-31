@@ -133,7 +133,7 @@ export const OrgOverviewView: React.FC<OrgOverviewViewProps> = ({
     .filter((c): c is Collaborator => !!c && allowedIds.has(c.id));
 
   return (
-    <div className="relative border border-slate-200 rounded-xl bg-slate-50 overflow-hidden" style={{ height: '70vh' }}>
+    <div className="relative border border-slate-200 rounded-xl bg-slate-50 overflow-hidden h-full min-h-0">
       {/* Zoom control buttons — top-right corner */}
       <TransformWrapper
         initialScale={0.85}
@@ -148,17 +148,17 @@ export const OrgOverviewView: React.FC<OrgOverviewViewProps> = ({
             <div className="absolute top-3 right-3 z-10 flex flex-col gap-1">
               <button
                 onClick={() => zoomIn()}
-                className="w-8 h-8 rounded-md bg-white border border-slate-200 shadow-sm text-slate-600 hover:bg-slate-100 text-lg leading-none flex items-center justify-center"
+                className="w-8 h-8 rounded-md bg-none border border-slate-200 shadow-sm text-slate-600 hover:bg-slate-100 text-lg leading-none flex items-center justify-center"
                 title="Zoom avant"
               >+</button>
               <button
                 onClick={() => zoomOut()}
-                className="w-8 h-8 rounded-md bg-white border border-slate-200 shadow-sm text-slate-600 hover:bg-slate-100 text-lg leading-none flex items-center justify-center"
+                className="w-8 h-8 rounded-md bg-none border border-slate-200 shadow-sm text-slate-600 hover:bg-slate-100  text-lg leading-none flex items-center justify-center"
                 title="Zoom arrière"
               >−</button>
               <button
                 onClick={() => resetTransform()}
-                className="w-8 h-8 rounded-md bg-white border border-slate-200 shadow-sm text-slate-500 hover:bg-slate-100 text-xs leading-none flex items-center justify-center"
+                className="w-8 h-8 rounded-md bg-none border border-slate-200 shadow-sm text-slate-500 hover:bg-slate-100 text-xs leading-none flex items-center justify-center"
                 title="Réinitialiser"
               >↺</button>
             </div>
