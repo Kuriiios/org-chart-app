@@ -1,31 +1,39 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { ReactNode } from 'react';
 import App from '../App';
 
 // Mock external layout libraries that rely on browser rendering APIs not
 // available in jsdom.
-vi.mock('react-organizational-chart', () => ({
-  Tree: ({ children, label }: any) => (
-    <div data-testid="org-tree">{label}{children}</div>
-  ),
-  TreeNode: ({ children, label }: any) => (
-    <div data-testid="org-tree-node">{label}{children}</div>
-  ),
-}));
+vi.mock('react-organizational-chart', () => {
+  type OrgNodeProps = { children?: ReactNode; label?: ReactNode };
+  return {
+    Tree: ({ children, label }: OrgNodeProps) => (
+      <div data-testid="org-tree">{label}{children}</div>
+    ),
+    TreeNode: ({ children, label }: OrgNodeProps) => (
+      <div data-testid="org-tree-node">{label}{children}</div>
+    ),
+  };
+});
 
-vi.mock('react-zoom-pan-pinch', () => ({
-  TransformWrapper: ({ children }: any) => {
-    // TransformWrapper uses a render-prop pattern in production; handle both forms.
-    const content = typeof children === 'function'
-      ? children({ zoomIn: () => {}, zoomOut: () => {}, resetTransform: () => {} })
-      : children;
-    return <div data-testid="transform-wrapper">{content}</div>;
-  },
-  TransformComponent: ({ children }: any) => (
-    <div data-testid="transform-component">{children}</div>
-  ),
-}));
+vi.mock('react-zoom-pan-pinch', () => {
+  type TransformHelpers = { zoomIn: () => void; zoomOut: () => void; resetTransform: () => void };
+  type TransformChildren = ReactNode | ((helpers: TransformHelpers) => ReactNode);
+  return {
+    TransformWrapper: ({ children }: { children?: TransformChildren }) => {
+      // TransformWrapper uses a render-prop pattern in production; handle both forms.
+      const content = typeof children === 'function'
+        ? (children as (helpers: TransformHelpers) => ReactNode)({ zoomIn: () => {}, zoomOut: () => {}, resetTransform: () => {} })
+        : children;
+      return <div data-testid="transform-wrapper">{content}</div>;
+    },
+    TransformComponent: ({ children }: { children?: ReactNode }) => (
+      <div data-testid="transform-component">{children}</div>
+    ),
+  };
+});
 
 describe('App – integration', () => {
   it('renders the carousel view by default and shows a collaborator count', () => {
