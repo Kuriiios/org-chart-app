@@ -58,3 +58,65 @@ jobs:
 
       - run: npm ci
       - run: npm audit --audit-level=high
+
+  # ── Secret scanning — must run before any build to catch leaks early ─────────
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history so gitleaks can scan all commits
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # For private / org repos, add GITLEAKS_LICENSE to repository secrets.
+          # Public repos do not require a license.
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
+  # ── Lighthouse CI — build first, then lhci serves staticDistDir itself ───────
+  lighthouseci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run dev
+      - run: npm install -g @lhci/cli@0.15.x
+      - run: lhci autorun
+
+  # ── Cypress e2e — build → preview → run specs ────────────────────────────────
+  cypress:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Run Cypress e2e tests
+        uses: cypress-io/github-action@v6
+        with:
+          install: false
+          start: npm run preview
+          wait-on: 'http://localhost:4173'
+          command: npm run cypress:run
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos

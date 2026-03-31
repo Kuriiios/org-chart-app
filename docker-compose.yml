@@ -1,5 +1,7 @@
 services:
+  # ── Development server (hot-reload) ──────────────────────────────────────────
   frontend:
+    profiles: [dev]
     build:
       context: .
       target: development
@@ -10,3 +12,111 @@ services:
       - /app/node_modules
     environment:
       - WATCHPACK_POLLING=true # Ensures hot-reload works on Windows
+
+  # ── Production build served by Nginx ─────────────────────────────────────────
+  # Port 80 is owned by Windows HTTP.sys; use 8080 to avoid all-port interception.
+  frontend-prod:
+    profiles: [prod, monitoring, e2e]
+    build:
+      context: .
+      target: production
+    ports:
+      - "8080:80"
+    volumes:
+      - ./monitoring/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://127.0.0.1/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # Exports Nginx stub_status metrics for Prometheus
+  nginx-exporter:
+    profiles: [monitoring]
+    image: nginx/nginx-prometheus-exporter:latest
+    command:
+      - "--nginx.scrape-uri=http://frontend-prod/nginx_status"
+    ports:
+      - "9113:9113"
+    restart: unless-stopped
+    depends_on:
+      frontend-prod:
+        condition: service_healthy
+
+  # ── Uptime Kuma — visual uptime / alerting dashboard ─────────────────────────
+  uptime-kuma:
+    profiles: [monitoring]
+    image: louislam/uptime-kuma:1
+    ports:
+      - "3001:3001"
+    environment:
+      - USERNAME=${UPTIME_KUMA_USER:-admin}
+      - PASSWORD=${UPTIME_KUMA_PASSWORD:-password123}
+    volumes:
+      - uptime-kuma-data:/app/data
+    restart: unless-stopped
+
+  # ── Prometheus — metrics collection ──────────────────────────────────────────
+  prometheus:
+    profiles: [monitoring]
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    restart: unless-stopped
+
+  # ── Grafana — metrics visualisation ──────────────────────────────────────────
+  grafana:
+    profiles: [monitoring]
+    image: grafana/grafana:latest
+    ports:
+      - "3002:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-password123}
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  # ── Cypress e2e — runs against the production build ──────────────────────────
+  # Usage: docker compose --profile e2e up --abort-on-container-exit --exit-code-from cypress
+  cypress:
+    profiles: [e2e]
+    image: cypress/included:latest
+    working_dir: /e2e
+    environment:
+      # Override the local baseUrl; inside Docker the service is reachable by its service name.
+      - CYPRESS_BASE_URL=http://frontend-prod
+    volumes:
+      - ./cypress:/e2e/cypress:rw
+      - ./cypress.config.ts:/e2e/cypress.config.ts:ro
+      # Mount cypress/tsconfig.json at the container project-root so Cypress's
+      # bundled ts-loader (TS 6.x) finds it and respects ignoreDeprecations: "6.0".
+      - ./cypress/tsconfig.json:/e2e/tsconfig.json:ro
+      - cypress_videos:/e2e/cypress/videos
+      - cypress_screenshots:/e2e/cypress/screenshots
+    depends_on:
+      frontend-prod:
+        condition: service_healthy
+
+  # ── Gitleaks — secret / credential leak scanning ─────────────────────────────
+  # Usage: docker compose --profile security run --rm gitleaks
+  gitleaks:
+    profiles: [security]
+    image: zricethezav/gitleaks:latest
+    volumes:
+      - .:/repo:ro
+    command: detect --source=/repo --verbose
+
+volumes:
+  uptime-kuma-data:
+  prometheus-data:
+  grafana-data:
+  cypress_videos:
+  cypress_screenshots:

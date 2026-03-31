@@ -7,8 +7,8 @@ RUN npm install
 # --- Development Stage ---
 FROM base AS development
 COPY . .
-# Vite (default for 5173) needs to listen on all interfaces
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# package.json dev script already passes --host 0.0.0.0
+CMD ["npm", "run", "dev"]
 
 # --- Build Stage ---
 FROM base AS build
