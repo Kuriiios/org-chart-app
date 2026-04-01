@@ -4,12 +4,6 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 
-# --- Development Stage ---
-FROM base AS development
-COPY . .
-# package.json dev script already passes --host 0.0.0.0
-CMD ["npm", "run", "dev"]
-
 # --- Build Stage ---
 FROM base AS build
 COPY . .

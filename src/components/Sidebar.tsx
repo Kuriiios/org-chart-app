@@ -143,7 +143,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <span className="text-slate-300 shrink-0 text-xs">└</span>
                   )}
                   <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${dept.colorClass ?? 'bg-slate-300'}`} />
-                  <span className="truncate">{dept.name}</span>
+                  <span className="">{dept.name}</span>
                 </div>
                 <div className="flex items-center gap-1 shrink-0 ml-1">
                   {hasChildren && (

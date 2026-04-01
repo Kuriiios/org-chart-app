@@ -39,7 +39,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       />
 
       {/* ── Body: sidebar + main ───────────────────────────────────────────── */}
-      <div className="flex flex-1 overflow-hidden w-full">
+      <div className="flex flex-1 w-full min-h-0">
         <aside className="w-64 shrink-0 bg-white border-r border-slate-200 pt-4 pb-4 pr-3 pl-0 overflow-y-auto">
           <Sidebar
             departments={departments}
@@ -50,7 +50,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             onChangeView={onChangeView}
           />
         </aside>
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 p-6 overflow-auto min-h-0" style={{ maxHeight: 'calc(100vh - 110px)' }}>
           {children}
         </main>
       </div>

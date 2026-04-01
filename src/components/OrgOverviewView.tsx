@@ -35,13 +35,13 @@ const OrgNode: React.FC<{
   return (
     <div
       onClick={onClick}
-      className="inline-flex flex-col items-center text-center border border-slate-200 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden w-36"
+      className="inline-flex flex-col items-center text-center border border-slate-200 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden w-40"
     >
       {/* Top strip coloured by department */}
       <div className={`h-1.5 w-full ${accentClass}`} />
       <div className="p-3 w-full">
         {/* photoUrl avatar */}
-        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-semibold text-slate-600 mx-auto mb-2">
+        <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center text-sm font-semibold text-slate-600 mx-auto mb-2">
           {photoUrl ? ( 
             <> 
               <img 
@@ -58,9 +58,9 @@ const OrgNode: React.FC<{
           )} 
         </div>
         <p className="text-xs font-semibold text-slate-900 leading-tight truncate">{name}</p>
-        <p className="text-xs text-slate-500 leading-tight truncate mt-0.5">{collaborator.title ?? ''}</p>
+        <p className="text-xs text-slate-500 leading-tight mt-0.5 truncate">{collaborator.title ?? ''}</p>
         {department && (
-          <span className={`inline-block mt-1.5 text-xs px-1.5 py-0.5 rounded-full font-medium truncate max-w-full ${badgeClass}`}>
+          <span className={`truncate inline-block mt-1.5 text-xs px-1.5 py-0.5 rounded-full font-medium max-w-full ${badgeClass}`}>
             {department.name}
           </span>
         )}
@@ -99,8 +99,13 @@ function renderNode(
     return <TreeNode key={collaborator.id} label={label} />;
   }
 
+  // If this node has exactly one child, add a class so we can override the
+  // CSS variable the library uses for connector height ("--tree-line-height").
+  // The rule in our global CSS will set it to twice the default.
+  const nodeClass = children.length === 1 ? 'org-chart-double-line' : undefined;
+
   return (
-    <TreeNode key={collaborator.id} label={label}>
+    <TreeNode key={collaborator.id} className={nodeClass} label={label}>
       {children.map(child => renderNode(child, collabMap, deptMap, allowedIds, onSelectCollaborator))}
     </TreeNode>
   );
@@ -133,10 +138,10 @@ export const OrgOverviewView: React.FC<OrgOverviewViewProps> = ({
     .filter((c): c is Collaborator => !!c && allowedIds.has(c.id));
 
   return (
-    <div className="relative border border-slate-200 rounded-xl bg-slate-50 overflow-hidden h-full min-h-0">
+    <div className="flex relative border border-slate-200 rounded-xl bg-slate-50 overflow-hidden h-full min-h-0 max-h-85vh">
       {/* Zoom control buttons — top-right corner */}
       <TransformWrapper
-        initialScale={0.85}
+        initialScale={0.5}
         minScale={0.2}
         maxScale={2}
         centerOnInit
@@ -169,6 +174,7 @@ export const OrgOverviewView: React.FC<OrgOverviewViewProps> = ({
               contentStyle={{ padding: '48px' }}
             >
               <Tree
+                lineHeight="20px"
                 lineWidth="2px"
                 lineColor="#cbd5e1"
                 lineBorderRadius="6px"
