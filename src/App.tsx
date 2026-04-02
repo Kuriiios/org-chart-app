@@ -96,10 +96,10 @@ function App() {
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
     >
-      <div>
+      <div className="w-full h-full max-w-full max-h-full min-h-0">
         {activeView === 'overview' ? (
           // ── Tree view (whole company OR sub-team) ──────────────────────────────
-          <div>
+          <div className="w-full h-full max-w-full max-h-full min-h-0">
           
             <OrgOverviewView
               collaborators={collaboratorsToShow}

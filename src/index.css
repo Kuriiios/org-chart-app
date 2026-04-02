@@ -62,6 +62,14 @@ body {
   margin: 0;
 }
 
+/* Org chart overrides: when a node has exactly one child we want a longer
+   vertical connector so single-child branches visually match multi-child
+   branches. The library uses the --tree-line-height CSS variable for that
+   connector height, so override it here for the special class. */
+.org-chart-double-line > ul {
+  --tree-line-height: 40px;
+}
+
 h1,
 h2 {
   font-family: var(--heading);
