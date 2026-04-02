@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { Sidebar } from '../components/Sidebar';
 import type { Department } from '../types/Department';
@@ -102,7 +103,7 @@ describe('Sidebar', () => {
     // Direction Générale: c1 (d1) + c2 (d2 sub-dept) = 2
     // Finance: c3 (d3) = 1
     const countEls = screen.getAllByText(/^\d+$/);
-    const values = countEls.map(el => el.textContent);
+    const values = countEls.map((el: HTMLElement) => el.textContent);
     expect(values).toContain('2'); // Direction Générale (includes sub-dept Technologie count)
     expect(values).toContain('1'); // Finance
   });
