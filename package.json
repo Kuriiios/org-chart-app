@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
-    "@fortawesome/free-regular-svg-icons": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.3.0",
     "react": "^19.2.4",
@@ -44,7 +43,6 @@
     "globals": "^17.4.0",
     "jsdom": "^29.0.1",
     "postcss": "^8.5.8",
-    "puppeteer": "^24.40.0",
     "tailwindcss": "^4.2.2",
     "typescript": "~5.9.0",
     "typescript-eslint": "^8.57.0",

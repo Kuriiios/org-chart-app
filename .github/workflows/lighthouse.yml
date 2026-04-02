@@ -1,0 +1,18 @@
+name: lighthouse-ci
+ 
+on: [push]
+ 
+jobs:
+  lighthouseci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: yarn && yarn global add @lhci/cli
+      - run: yarn build
+      - run: lhci collect --additive --config=.lighthouserc.mobile.js
+      - run: lhci collect --additive --config=.lighthouserc.desktop.js
+      - run: lhci upload
+      - run: lhci assert
