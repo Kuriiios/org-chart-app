@@ -1,22 +1,5 @@
 services:
-  # ── Development server (hot-reload) ──────────────────────────────────────────
-  frontend:
-    profiles: [dev]
-    build:
-      context: .
-      target: development
-    ports:
-      - "3000:5173"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    environment:
-      - WATCHPACK_POLLING=true # Ensures hot-reload works on Windows
-
-  # ── Production build served by Nginx ─────────────────────────────────────────
-  # Port 80 is owned by Windows HTTP.sys; use 8080 to avoid all-port interception.
   frontend-prod:
-    profiles: [prod, monitoring, e2e]
     build:
       context: .
       target: production
@@ -91,7 +74,6 @@ services:
     image: cypress/included:latest
     working_dir: /e2e
     environment:
-      # Override the local baseUrl; inside Docker the service is reachable by its service name.
       - CYPRESS_BASE_URL=http://frontend-prod
     volumes:
       - ./cypress:/e2e/cypress:rw
