@@ -10,6 +10,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - run: npm run build && npm run preview -- --port=417
       - run: yarn && yarn global add @lhci/cli
       - run: yarn build
       - run: lhci collect --additive --config=.lighthouserc.mobile.js
