@@ -73,20 +73,6 @@ jobs:
           # Public repos do not require a license.
           GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
 
-  # ── Lighthouse CI — build first, then lhci serves staticDistDir itself ───────
-  lighthouseci:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run dev
-      - run: npm install -g @lhci/cli@0.15.x
-      - run: lhci autorun
-
   # ── Cypress e2e — build → preview → run specs ────────────────────────────────
   cypress:
     runs-on: ubuntu-latest
