@@ -12,7 +12,6 @@ jobs:
           node-version: 22
       - run: yarn && yarn global add @lhci/cli
       - run: yarn build
-      - run: lhci collect --additive --config=.lighthouserc.mobile.js
-      - run: lhci collect --additive --config=.lighthouserc.desktop.js
+      - run: lhci collect --additive --config=lighthouserc.js
       - run: lhci upload
       - run: lhci assert
