@@ -28,6 +28,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  /* Default height for org chart nodes; can be overridden via JS */
+  --org-node-height: 10rem;
+
   @media (max-width: 1024px) {
     font-size: 16px;
   }
@@ -62,13 +65,7 @@ body {
   margin: 0;
 }
 
-/* Org chart overrides: when a node has exactly one child we want a longer
-   vertical connector so single-child branches visually match multi-child
-   branches. The library uses the --tree-line-height CSS variable for that
-   connector height, so override it here for the special class. */
-.org-chart-double-line > ul {
-  --tree-line-height: 40px;
-}
+
 
 h1,
 h2 {
@@ -113,3 +110,7 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* (legacy) .org-spacer-node used by an earlier layout experiment.
+  Kept empty so it has no visual effect. */
+.org-spacer-node {}

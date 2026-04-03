@@ -59,6 +59,11 @@ const OrgNode: React.FC<{
         </div>
         <p className="text-xs font-semibold text-slate-900 leading-tight truncate">{name}</p>
         <p className="text-xs text-slate-500 leading-tight mt-0.5 truncate">{collaborator.title ?? ''}</p>
+        {collaborator.hierarchyTier && (
+          <p className="text-[10px] text-slate-400 leading-tight mt-0.5">
+            Tier {collaborator.hierarchyTier}
+          </p>
+        )}
         {department && (
           <span className={`truncate inline-block mt-1.5 text-xs px-1.5 py-0.5 rounded-full font-medium max-w-full ${badgeClass}`}>
             {department.name}
@@ -99,14 +104,11 @@ function renderNode(
     return <TreeNode key={collaborator.id} label={label} />;
   }
 
-  // If this node has exactly one child, add a class so we can override the
-  // CSS variable the library uses for connector height ("--tree-line-height").
-  // The rule in our global CSS will set it to twice the default.
-  const nodeClass = children.length === 1 ? 'org-chart-double-line' : undefined;
-
   return (
-    <TreeNode key={collaborator.id} className={nodeClass} label={label}>
-      {children.map(child => renderNode(child, collabMap, deptMap, allowedIds, onSelectCollaborator))}
+    <TreeNode key={collaborator.id} label={label}>
+      {children.map(child =>
+        renderNode(child, collabMap, deptMap, allowedIds, onSelectCollaborator)
+      )}
     </TreeNode>
   );
 }
@@ -142,7 +144,7 @@ export const OrgOverviewView: React.FC<OrgOverviewViewProps> = ({
       {/* Zoom control buttons — top-right corner */}
       <TransformWrapper
         initialScale={0.5}
-        minScale={0.2}
+        minScale={0.3}
         maxScale={2}
         centerOnInit
         wheel={{ step: 0.08 }}
@@ -177,6 +179,7 @@ export const OrgOverviewView: React.FC<OrgOverviewViewProps> = ({
                 lineHeight="20px"
                 lineWidth="2px"
                 lineColor="#cbd5e1"
+                lineColor="#ff0000"
                 lineBorderRadius="6px"
                 label={
                   <OrgNode
