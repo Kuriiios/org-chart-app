@@ -120,7 +120,7 @@ code {
 }
 
 /* Re-enable the vertical connector segment for that single child */
-.org-tree-wrapper li:only-of-type::before {
+.org-tree-wrapper li> ul > li:only-of-type::before {
   display: inline-block;
   height: var(--tree-line-height);
 }
