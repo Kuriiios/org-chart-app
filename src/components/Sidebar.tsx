@@ -28,7 +28,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const toggleExpand = (id: string) => {
     setExpandedIds(prev => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
       return next;
     });
   };
@@ -92,7 +96,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <li key={view}>
                 <button
                   onClick={() => handleNavClick(view)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`w-full flex items-center gap-3 pl-3 pr-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     isActive
                       ? 'bg-slate-900 text-white'
                       : 'text-slate-600 hover:bg-slate-100'
@@ -114,7 +118,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* ── Departments section ─────────────────────────────────────────── */}
       <div>
-        <ul className="space-y-0.5 overflow-auto max-h-[55vh]">
+        <ul className="space-y-0.5 pl-4 overflow-auto max-h-[55vh]">
           {hierarchicalDepts.map(({ dept, depth }) => {
             const count = countFor(dept.id);
             const isSelected = selectedDepartmentId === dept.id;
@@ -124,7 +128,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <li
                 key={dept.id}
                 style={{ paddingLeft: `${depth * 12}px` }}
-                className={`flex items-center justify-between px-2 py-2 rounded-lg cursor-pointer text-sm transition-colors ${
+                className={`flex items-center justify-between pl-2 pr-4 py-2 rounded-lg cursor-pointer text-sm transition-colors ${
                   isSelected
                     ? `${dept.badgeClass ?? 'bg-slate-100 text-slate-600'} font-medium`
                     : 'hover:bg-slate-50'
@@ -139,7 +143,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <span className="text-slate-300 shrink-0 text-xs">└</span>
                   )}
                   <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${dept.colorClass ?? 'bg-slate-300'}`} />
-                  <span className="truncate">{dept.name}</span>
+                  <span className="">{dept.name}</span>
                 </div>
                 <div className="flex items-center gap-1 shrink-0 ml-1">
                   {hasChildren && (

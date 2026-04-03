@@ -1,0 +1,41 @@
+services:
+  frontend-prod:
+    build:
+      context: .
+      target: production
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://127.0.0.1/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  cypress:
+    profiles: [e2e]
+    image: cypress/included:latest
+    working_dir: /e2e
+    environment:
+      - CYPRESS_BASE_URL=http://frontend-prod
+    volumes:
+      - ./cypress:/e2e/cypress:rw
+      - ./cypress.config.ts:/e2e/cypress.config.ts:ro
+      - ./cypress/tsconfig.json:/e2e/tsconfig.json:ro
+      - cypress_videos:/e2e/cypress/videos
+      - cypress_screenshots:/e2e/cypress/screenshots
+    depends_on:
+      frontend-prod:
+        condition: service_healthy
+
+  gitleaks:
+    profiles: [security]
+    image: zricethezav/gitleaks:latest
+    volumes:
+      - .:/repo:ro
+    command: detect --source=/repo --verbose
+
+volumes:
+  cypress_videos:
+  cypress_screenshots:

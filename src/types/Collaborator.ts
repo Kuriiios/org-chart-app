@@ -21,6 +21,8 @@ export interface Collaborator {
   photoUrl?: string;
   // id of the manager (parent) in the org tree
   managerId?: string;
+  // numeric tier in the hierarchy tree (1 = top level, larger numbers are deeper levels)
+  hierarchyTier?: number;
   // list of direct report ids
   directReportIds?: string[];
 }

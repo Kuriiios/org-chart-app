@@ -7,7 +7,7 @@ interface TopSearchBarProps {
 
 export const TopSearchBar: React.FC<TopSearchBarProps> = ({ searchTerm, onSearchChange }) => {
   return (
-    <div className="relative w-72">
+    <div className="relative w-72 ml-5">
       {/* Search icon */}
       <svg
         className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"

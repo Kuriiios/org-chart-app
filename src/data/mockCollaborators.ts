@@ -13,7 +13,8 @@ export const mockCollaborators: Collaborator[] = [
 		departmentId: 'd1',
 		departmentName: 'Direction Générale',
 		email: 'luc.dupont@example.com',
-		directReportIds: ['c2', 'c3', 'c4', 'c17', 'c35'],
+		hierarchyTier: 1,
+		directReportIds: ['c2', 'c3', 'c4', 'c17'],
 	},
 	{
 		id: 'c2',
@@ -25,6 +26,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Technologie',
 		email: 'claire.martin@example.com',
 		managerId: 'c1',
+		hierarchyTier: 2,
 		directReportIds: ['c5', 'c10', 'c31', 'c32'],
 	},
 	{
@@ -37,6 +39,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Finance',
 		email: 'jean.moreau@example.com',
 		managerId: 'c1',
+		hierarchyTier: 2,
 		directReportIds: ['c6', 'c7', 'c25'],
 	},
 	{
@@ -49,7 +52,8 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Ressources Humaines',
 		email: 'sophie.bernard@example.com',
 		managerId: 'c1',
-		directReportIds: ['c15'],
+		hierarchyTier: 2,
+		directReportIds: ['c15', 'c27'],
 	},
 	{
 		id: 'c5',
@@ -61,6 +65,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Développement Frontend',
 		email: 'armand.petit@example.com',
 		managerId: 'c2',
+		hierarchyTier: 3,
 		directReportIds: ['c8', 'c9', 'c21', 'c22', 'c34'],
 	},
 	{
@@ -73,6 +78,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Contrôle de Gestion',
 		email: 'elodie.roux@example.com',
 		managerId: 'c3',
+		hierarchyTier: 3,
 		directReportIds: ['c13'],
 	},
 	{
@@ -85,6 +91,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Comptabilité',
 		email: 'marc.leroy@example.com',
 		managerId: 'c3',
+		hierarchyTier: 3,
 		directReportIds: ['c14', 'c26'],
 	},
 	// ── Développement Frontend (d5) ─────────────────────────────────────
@@ -98,6 +105,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Développement Frontend',
 		email: 'camille.faure@example.com',
 		managerId: 'c5',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	{
@@ -110,6 +118,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Développement Frontend',
 		email: 'thomas.garnier@example.com',
 		managerId: 'c5',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	// ── Développement Backend (d6) ──────────────────────────────────────
@@ -123,6 +132,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Développement Backend',
 		email: 'hugo.blanc@example.com',
 		managerId: 'c2',
+		hierarchyTier: 3,
 		directReportIds: ['c11', 'c12', 'c23', 'c24', 'c33'],
 	},
 	{
@@ -135,6 +145,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Développement Backend',
 		email: 'yasmine.benali@example.com',
 		managerId: 'c10',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	{
@@ -147,6 +158,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Développement Backend',
 		email: 'romain.chevalier@example.com',
 		managerId: 'c10',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	// ── Contrôle de Gestion (d7) ────────────────────────────────────────
@@ -160,6 +172,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Contrôle de Gestion',
 		email: 'alice.morin@example.com',
 		managerId: 'c6',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	// ── Comptabilité (d8) ───────────────────────────────────────────────
@@ -173,6 +186,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Comptabilité',
 		email: 'nathalie.perrin@example.com',
 		managerId: 'c7',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	// ── Recrutement & Formation (d9) ────────────────────────────────────
@@ -186,6 +200,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Recrutement & Formation',
 		email: 'julien.vasseur@example.com',
 		managerId: 'c4',
+		hierarchyTier: 3,
 		directReportIds: ['c16', 'c28', 'c29', 'c30'],
 	},
 	{
@@ -198,6 +213,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Recrutement & Formation',
 		email: 'lea.dumont@example.com',
 		managerId: 'c15',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	// ── Marketing (d10)
@@ -211,6 +227,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Marketing',
 		email: 'marie.dubois@example.com',
 		managerId: 'c1',
+		hierarchyTier: 2,
 		directReportIds: ['c18','c19','c20','c36'],
 	},
 	{
@@ -223,6 +240,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Marketing',
 		email: 'paul.girard@example.com',
 		managerId: 'c17',
+		hierarchyTier: 4,
 		directReportIds: [],
 	},
 	{
@@ -235,6 +253,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Marketing',
 		email: 'emilie.laurent@example.com',
 		managerId: 'c17',
+		hierarchyTier: 4,
 		directReportIds: [],
 	},
 	{
@@ -247,6 +266,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Marketing',
 		email: 'antoine.marchand@example.com',
 		managerId: 'c17',
+		hierarchyTier: 4,
 		directReportIds: [],
 	},
 	// ── Frontend additions
@@ -260,6 +280,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Développement Frontend',
 		email: 'clara.nguyen@example.com',
 		managerId: 'c5',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	{
@@ -272,6 +293,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Développement Frontend',
 		email: 'lucas.petit@example.com',
 		managerId: 'c5',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	// ── Backend additions
@@ -285,6 +307,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Développement Backend',
 		email: 'sophie.martin@example.com',
 		managerId: 'c10',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	{
@@ -297,6 +320,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Développement Backend',
 		email: 'jerome.noel@example.com',
 		managerId: 'c10',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	// ── Finance additions
@@ -310,6 +334,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Finance',
 		email: 'olivier.gauthier@example.com',
 		managerId: 'c3',
+		hierarchyTier: 4,
 		directReportIds: [],
 	},
 	// ── Accounting additions
@@ -323,6 +348,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Comptabilité',
 		email: 'camille.morel@example.com',
 		managerId: 'c7',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	// ── HR / Recruitment additions
@@ -336,6 +362,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Ressources Humaines',
 		email: 'ingrid.laurent@example.com',
 		managerId: 'c4',
+		hierarchyTier: 4,
 		directReportIds: [],
 	},
 	{
@@ -348,6 +375,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Recrutement & Formation',
 		email: 'paul.renault@example.com',
 		managerId: 'c15',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	{
@@ -360,6 +388,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Recrutement & Formation',
 		email: 'marion.duprey@example.com',
 		managerId: 'c15',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	{
@@ -372,6 +401,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Recrutement & Formation',
 		email: 'victor.bernard@example.com',
 		managerId: 'c15',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	// ── Product & Data
@@ -385,6 +415,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Technologie',
 		email: 'pierre.lemoine@example.com',
 		managerId: 'c2',
+		hierarchyTier: 4,
 		directReportIds: [],
 	},
 	{
@@ -397,6 +428,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Technologie',
 		email: 'zoe.martin@example.com',
 		managerId: 'c2',
+		hierarchyTier: 4,
 		directReportIds: [],
 	},
 	// ── Additional Backend/QA
@@ -410,6 +442,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Développement Backend',
 		email: 'maxime.robert@example.com',
 		managerId: 'c10',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	// ── UX / Research
@@ -423,6 +456,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Développement Frontend',
 		email: 'sarah.keller@example.com',
 		managerId: 'c5',
+		hierarchyTier: 5,
 		directReportIds: [],
 	},
 	// ── Office / Support
@@ -435,7 +469,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentId: 'd1',
 		departmentName: 'Direction Générale',
 		email: 'adrien.lebrun@example.com',
-		managerId: 'c1',
+		hierarchyTier: 4,
 		directReportIds: [],
 	},
 	// ── Marketing Ops
@@ -449,6 +483,7 @@ export const mockCollaborators: Collaborator[] = [
 		departmentName: 'Marketing',
 		email: 'nathanael.boucher@example.com',
 		managerId: 'c17',
+		hierarchyTier: 4,
 		directReportIds: [],
 	},
 ];

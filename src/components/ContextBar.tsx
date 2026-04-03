@@ -12,7 +12,6 @@ interface ContextBarProps {
 }
 
 export const ContextBar: React.FC<ContextBarProps> = ({
-  activeView,
   selectedDepartmentId,
   departments,
 }) => {
@@ -37,7 +36,7 @@ export const ContextBar: React.FC<ContextBarProps> = ({
       path.unshift(rootDept);
     }
     return path;
-  }, [selectedDepartmentId, deptMap]);
+  }, [selectedDepartmentId, deptMap, departments]);
 
 
   return (
