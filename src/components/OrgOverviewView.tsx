@@ -59,11 +59,6 @@ const OrgNode: React.FC<{
         </div>
         <p className="text-xs font-semibold text-slate-900 leading-tight truncate">{name}</p>
         <p className="text-xs text-slate-500 leading-tight mt-0.5 truncate">{collaborator.title ?? ''}</p>
-        {collaborator.hierarchyTier && (
-          <p className="text-[10px] text-slate-400 leading-tight mt-0.5">
-            Tier {collaborator.hierarchyTier}
-          </p>
-        )}
         {department && (
           <span className={`truncate inline-block mt-1.5 text-xs px-1.5 py-0.5 rounded-full font-medium max-w-full ${badgeClass}`}>
             {department.name}
@@ -100,12 +95,13 @@ function renderNode(
     />
   );
 
-  if (children.length === 0) {
-    return <TreeNode key={collaborator.id} label={label} />;
-  }
+  const tier_gap = (collaborator.hierarchyTier ?? 1) - (collabMap[collaborator.managerId ?? '']?.hierarchyTier ?? 0);
+  
+  const nodeClass = tier_gap > 1 ? 'org-chart-double-line' : undefined;
+  
 
   return (
-    <TreeNode key={collaborator.id} label={label}>
+    <TreeNode key={collaborator.id}  className={nodeClass} label={label}>
       {children.map(child =>
         renderNode(child, collabMap, deptMap, allowedIds, onSelectCollaborator)
       )}
@@ -144,7 +140,7 @@ export const OrgOverviewView: React.FC<OrgOverviewViewProps> = ({
       {/* Zoom control buttons — top-right corner */}
       <TransformWrapper
         initialScale={0.5}
-        minScale={0.3}
+        minScale={0.2}
         maxScale={2}
         centerOnInit
         wheel={{ step: 0.08 }}
@@ -175,27 +171,28 @@ export const OrgOverviewView: React.FC<OrgOverviewViewProps> = ({
               wrapperStyle={{ width: '100%', height: '100%', cursor: 'grab' }}
               contentStyle={{ padding: '48px' }}
             >
-              <Tree
-                lineHeight="20px"
-                lineWidth="2px"
-                lineColor="#cbd5e1"
-                lineColor="#ff0000"
-                lineBorderRadius="6px"
-                label={
-                  <OrgNode
-                    collaborator={primaryRoot}
-                    department={primaryDept}
-                    onClick={() => onSelectCollaborator(primaryRoot.id)}
-                  />
-                }
-              >
-                {primaryChildren.map(child =>
-                  renderNode(child, collabMap, deptMap, allowedIds, onSelectCollaborator)
-                )}
-                {extraRoots.map(root =>
-                  renderNode(root, collabMap, deptMap, allowedIds, onSelectCollaborator)
-                )}
-              </Tree>
+              <div className="org-tree-wrapper">
+                <Tree
+                  lineHeight="20px"
+                  lineWidth="3px"
+                  lineColor="#cbd5e1"
+                  lineBorderRadius="3px"
+                  label={
+                    <OrgNode
+                      collaborator={primaryRoot}
+                      department={primaryDept}
+                      onClick={() => onSelectCollaborator(primaryRoot.id)}
+                    />
+                  }
+                >
+                  {primaryChildren.map(child =>
+                    renderNode(child, collabMap, deptMap, allowedIds, onSelectCollaborator)
+                  )}
+                  {extraRoots.map(root =>
+                    renderNode(root, collabMap, deptMap, allowedIds, onSelectCollaborator)
+                  )}
+                </Tree>
+              </div>
             </TransformComponent>
           </>
         )}

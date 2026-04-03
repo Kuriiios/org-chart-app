@@ -65,7 +65,9 @@ body {
   margin: 0;
 }
 
-
+.org-chart-double-line {
+  --tree-line-height: 300px;
+}
 
 h1,
 h2 {
@@ -111,6 +113,14 @@ code {
   background: var(--code-bg);
 }
 
-/* (legacy) .org-spacer-node used by an earlier layout experiment.
-  Kept empty so it has no visual effect. */
-.org-spacer-node {}
+/* Fix react-organizational-chart's :only-of-type behavior, but only in our tree */
+.org-tree-wrapper li:only-of-type {
+  /* restore the same padding used for normal nodes */
+  padding: var(--tree-line-height) var(--tree-node-padding) 0 var(--tree-node-padding);
+}
+
+/* Re-enable the vertical connector segment for that single child */
+.org-tree-wrapper li:only-of-type::before {
+  display: inline-block;
+  height: var(--tree-line-height);
+}
