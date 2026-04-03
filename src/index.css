@@ -28,6 +28,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  /* Default height for org chart nodes; can be overridden via JS */
+  --org-node-height: 10rem;
+
   @media (max-width: 1024px) {
     font-size: 16px;
   }
@@ -62,12 +65,8 @@ body {
   margin: 0;
 }
 
-/* Org chart overrides: when a node has exactly one child we want a longer
-   vertical connector so single-child branches visually match multi-child
-   branches. The library uses the --tree-line-height CSS variable for that
-   connector height, so override it here for the special class. */
-.org-chart-double-line > ul {
-  --tree-line-height: 40px;
+.org-chart-double-line {
+  --tree-line-height: 300px;
 }
 
 h1,
@@ -112,4 +111,16 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+/* Fix react-organizational-chart's :only-of-type behavior, but only in our tree */
+.org-tree-wrapper li:only-of-type {
+  /* restore the same padding used for normal nodes */
+  padding: var(--tree-line-height) var(--tree-node-padding) 0 var(--tree-node-padding);
+}
+
+/* Re-enable the vertical connector segment for that single child */
+.org-tree-wrapper li:only-of-type::before {
+  display: inline-block;
+  height: var(--tree-line-height);
 }

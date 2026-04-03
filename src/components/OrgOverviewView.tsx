@@ -95,18 +95,16 @@ function renderNode(
     />
   );
 
-  if (children.length === 0) {
-    return <TreeNode key={collaborator.id} label={label} />;
-  }
-
-  // If this node has exactly one child, add a class so we can override the
-  // CSS variable the library uses for connector height ("--tree-line-height").
-  // The rule in our global CSS will set it to twice the default.
-  const nodeClass = children.length === 1 ? 'org-chart-double-line' : undefined;
+  const tier_gap = (collaborator.hierarchyTier ?? 1) - (collabMap[collaborator.managerId ?? '']?.hierarchyTier ?? 0);
+  
+  const nodeClass = tier_gap > 1 ? 'org-chart-double-line' : undefined;
+  
 
   return (
-    <TreeNode key={collaborator.id} className={nodeClass} label={label}>
-      {children.map(child => renderNode(child, collabMap, deptMap, allowedIds, onSelectCollaborator))}
+    <TreeNode key={collaborator.id}  className={nodeClass} label={label}>
+      {children.map(child =>
+        renderNode(child, collabMap, deptMap, allowedIds, onSelectCollaborator)
+      )}
     </TreeNode>
   );
 }
@@ -173,26 +171,28 @@ export const OrgOverviewView: React.FC<OrgOverviewViewProps> = ({
               wrapperStyle={{ width: '100%', height: '100%', cursor: 'grab' }}
               contentStyle={{ padding: '48px' }}
             >
-              <Tree
-                lineHeight="20px"
-                lineWidth="2px"
-                lineColor="#cbd5e1"
-                lineBorderRadius="6px"
-                label={
-                  <OrgNode
-                    collaborator={primaryRoot}
-                    department={primaryDept}
-                    onClick={() => onSelectCollaborator(primaryRoot.id)}
-                  />
-                }
-              >
-                {primaryChildren.map(child =>
-                  renderNode(child, collabMap, deptMap, allowedIds, onSelectCollaborator)
-                )}
-                {extraRoots.map(root =>
-                  renderNode(root, collabMap, deptMap, allowedIds, onSelectCollaborator)
-                )}
-              </Tree>
+              <div className="org-tree-wrapper">
+                <Tree
+                  lineHeight="20px"
+                  lineWidth="3px"
+                  lineColor="#cbd5e1"
+                  lineBorderRadius="3px"
+                  label={
+                    <OrgNode
+                      collaborator={primaryRoot}
+                      department={primaryDept}
+                      onClick={() => onSelectCollaborator(primaryRoot.id)}
+                    />
+                  }
+                >
+                  {primaryChildren.map(child =>
+                    renderNode(child, collabMap, deptMap, allowedIds, onSelectCollaborator)
+                  )}
+                  {extraRoots.map(root =>
+                    renderNode(root, collabMap, deptMap, allowedIds, onSelectCollaborator)
+                  )}
+                </Tree>
+              </div>
             </TransformComponent>
           </>
         )}
