@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { screen, fireEvent, within } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import App from '../App';
@@ -43,7 +44,7 @@ describe('App – integration', () => {
     // Count paragraph, e.g. "36 collaborateurs" — narrow by tag to avoid the heading
     expect(
       screen.getByText(
-        (content, element) =>
+        (content: string, element: Element | null) =>
           element?.tagName === 'P' && /\d/.test(content) && /collaborateur/i.test(content),
       ),
     ).toBeInTheDocument();
@@ -91,7 +92,7 @@ describe('App – integration', () => {
     const user = userEvent.setup();
     render(<App />);
     // Click the article containing "Luc Dupont"
-    const article = screen.getAllByRole('article').find(el =>
+    const article = screen.getAllByRole('article').find((el: HTMLElement) =>
       within(el).queryByText('Luc Dupont') !== null,
     )!;
     await user.click(article);
@@ -103,7 +104,7 @@ describe('App – integration', () => {
   it('closes the profile modal when the Escape key is pressed', async () => {
     const user = userEvent.setup();
     render(<App />);
-    const article = screen.getAllByRole('article').find(el =>
+    const article = screen.getAllByRole('article').find((el: HTMLElement) =>
       within(el).queryByText('Luc Dupont') !== null,
     )!;
     await user.click(article);
@@ -115,7 +116,7 @@ describe('App – integration', () => {
   it('closes the profile modal when the close button is clicked', async () => {
     const user = userEvent.setup();
     render(<App />);
-    const article = screen.getAllByRole('article').find(el =>
+    const article = screen.getAllByRole('article').find((el: HTMLElement) =>
       within(el).queryByText('Luc Dupont') !== null,
     )!;
     await user.click(article);
@@ -136,7 +137,7 @@ describe('App – integration', () => {
     const user = userEvent.setup();
     render(<App />);
     // Open Luc Dupont's profile (he has direct reports)
-    const article = screen.getAllByRole('article').find(el =>
+    const article = screen.getAllByRole('article').find((el: HTMLElement) =>
       within(el).queryByText('Luc Dupont') !== null,
     )!;
     await user.click(article);
