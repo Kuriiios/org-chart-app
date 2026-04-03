@@ -1,4 +1,4 @@
-import { LogLevel } from '@azure/msal-browser';
+import { LogLevel } from '@azure/msal-react';
 
  /**
  * Configuration object to be passed to MSAL instance on creation. 
