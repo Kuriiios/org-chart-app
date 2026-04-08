@@ -29,7 +29,6 @@ Goal: Build a web-based organizational chart app (overview, carousel, and depart
   - [ ] `TopSearchBar.tsx` – global collaborator search bar.
   - [ ] `OrgOverviewView.tsx` – overview (whole-company) hierarchy view.
   - [ ] `OrgCarouselView.tsx` – carousel or grid of “new collaborators”.
-  - [ ] `DepartmentView.tsx` – focused hierarchy for a selected department.
   - [ ] `PersonCard.tsx` – small person thumbnail card used inside hierarchies.
   - [ ] `ProfileModal.tsx` – modal showing full collaborator profile.
 - [ ] In `src/layout/`, plan to create:
@@ -98,7 +97,7 @@ Goal: Build a web-based organizational chart app (overview, carousel, and depart
 - [ ] Inside `AppLayout`, render:
   - [ ] A `Sidebar` component in the left column.
   - [ ] A header area at the top of the right column with `TopSearchBar` and buttons/tabs to switch between "Overview", "Carousel", and "Department" views.
-  - [ ] A main content section that conditionally renders one of `OrgOverviewView`, `OrgCarouselView`, or `DepartmentView` based on `currentView`.
+  - [ ] A main content section that conditionally renders one of `OrgOverviewView` or `OrgCarouselView` based on `currentView`.
 - [ ] Style using Tailwind utility classes, starting simple (you can refine styling later).
 
 ### 7. Implement the Sidebar with searchable/filterable departments
@@ -187,10 +186,6 @@ Goal: Build a web-based organizational chart app (overview, carousel, and depart
   - [ ] Show only collaborators where `isNewCollaborator` is true.
   - [ ] Start with a responsive grid of `PersonCard`, then later upgrade to a real carousel if desired (e.g., using Swiper, but this can be optional).
   - [ ] Accept props: `collaborators`, `onSelectCollaborator`.
-- [ ] For the **Department** view (`DepartmentView`):
-  - [ ] When `selectedDepartmentId` is null, show a message like "Sélectionnez un département dans la barre latérale".
-  - [ ] When not null, show a section title with the department name and color.
-  - [ ] Filter collaborators to just those in the selected department and display them with `PersonCard` (again, hierarchy layout will come later).
 - [ ] Ensure clicking cards in any view opens the `ProfileModal` with correct data.
 
 ### 12. Introduce `useEffect` for simulated data loading
@@ -232,7 +227,6 @@ Goal: Build a web-based organizational chart app (overview, carousel, and depart
 
 ### 15. Implement department-specific hierarchy view
 
-- [ ] In `DepartmentView`, use the same hierarchy-building logic but restrict collaborators to the selected department.
 - [ ] Apply the department color (from `Department.colorClass`) to:
   - [ ] Card borders or backgrounds.
   - [ ] Connecting line styles if supported by the library.
@@ -276,7 +270,6 @@ Goal: Build a web-based organizational chart app (overview, carousel, and depart
 - `org-chart-app/src/components/TopSearchBar.tsx` — Global collaborator search bar.
 - `org-chart-app/src/components/OrgOverviewView.tsx` — Whole-company hierarchy view.
 - `org-chart-app/src/components/OrgCarouselView.tsx` — New collaborators carousel/grid view.
-- `org-chart-app/src/components/DepartmentView.tsx` — Focused hierarchy for a single department.
 - `org-chart-app/src/components/PersonCard.tsx` — Small card for individuals.
 - `org-chart-app/src/components/ProfileModal.tsx` — Detailed collaborator profile modal.
 - `org-chart-app/src/types/Collaborator.ts` — TypeScript interface for collaborators.
