@@ -176,7 +176,7 @@ export const OrgOverviewView: React.FC<OrgOverviewViewProps> = ({
                   lineHeight="20px"
                   lineWidth="3px"
                   lineColor="#cbd5e1"
-                  lineBorderRadius="3px"
+                  lineBorderRadius="0px"
                   label={
                     <OrgNode
                       collaborator={primaryRoot}

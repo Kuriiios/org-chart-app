@@ -1,3 +1,4 @@
+/*
 import React from 'react';
 
 export const DepartmentView: React.FC = () => {
@@ -9,3 +10,4 @@ export const DepartmentView: React.FC = () => {
 };
 
 export default DepartmentView;
+*/

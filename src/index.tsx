@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { PublicClientApplication, EventType, EventMessage } from '@azure/msal-browser';
-import { msalConfig } from './authConfig';
+import { msalConfig } from './auth/auth-config.ts';
 
 import './styles/index.css';
 
