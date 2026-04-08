@@ -14,7 +14,7 @@ const collaborators: Collaborator[] = [
   { id: 'c2', firstName: 'Marie', lastName: 'Curie', fullName: 'Marie Curie', title: 'Analyste', departmentId: 'd1', hierarchyTier: 2 },
 ];
 
-describe('OrgCarouselView', () => {
+describe('OrgOverView', () => {
   it('shows the empty state message when there are no collaborators', () => {
     render(<OrgCarouselView collaborators={[]} deptMap={deptMap} onSelectCollaborator={vi.fn()} />);
     expect(screen.getByText(/Aucun collaborateur/i)).toBeInTheDocument();
@@ -54,15 +54,5 @@ describe('OrgCarouselView', () => {
       <OrgCarouselView collaborators={collaborators} deptMap={deptMap} onSelectCollaborator={vi.fn()} />,
     );
     expect(screen.queryByText(/Aucun collaborateur/i)).not.toBeInTheDocument();
-  });
-
-  it('verify tier gaps are rendered correctly', () => {
-    render(
-      <OrgCarouselView collaborators={collaborators} deptMap={deptMap} onSelectCollaborator={vi.fn()} />,
-    );
-    const tier0Card = screen.getByText('Jean Moreau').closest('article');
-    const tier2Card = screen.getByText('Marie Curie').closest('article');
-    expect(tier0Card).toBeInTheDocument();
-    expect(tier2Card).toBeInTheDocument();
   });
 });

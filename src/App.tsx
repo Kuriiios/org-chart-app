@@ -8,32 +8,12 @@ import { mockDepartments } from './data/mockDepartments'
 import { mockCollaborators } from './data/mockCollaborators'
 import type { Department } from './types/Department'
 import type { Collaborator } from './types/Collaborator'
-import { useMsal } from '@azure/msal-react';
-import { loginRequest } from './auth/auth-config';
 
 type ActiveView = 'overview' | 'carousel';
 
 // App: top-level application
 // Manages the active view, selected-department, and modal state.
 function App() {
-  const { instance } = useMsal();
-  const activeAccount = instance.getActiveAccount();
-  
-  const handleLoginRedirect = () => {
-    instance
-      .loginRedirect({
-        ...loginRequest,
-        redirectUri: '/',
-      })
-      .catch((error) => console.log(error));
-  };
-
-  const handleLogoutRedirect = () => {
-    instance.logoutPopup({
-      postLogoutRedirectUri: '/',
-    });
-    window.location.reload();
-  };
 
   const [departments] = useState<Department[]>(mockDepartments)
   const [collaborators] = useState<Collaborator[]>(mockCollaborators)
@@ -117,14 +97,6 @@ function App() {
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
       >
-        <div>
-          {activeAccount ? (
-            <button onClick={handleLogoutRedirect}>Logout</button>
-
-          ) : (
-            <button onClick={handleLoginRedirect}>Login</button>
-          )}
-        </div>
         <div className="w-full h-full max-w-full max-h-full min-h-0">
           {activeView === 'overview' ? (
             // ── Tree view (whole company OR sub-team) ──────────────────────────────

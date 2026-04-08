@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PersonCard } from '../components/PersonCard';
 import type { Collaborator } from '../types/Collaborator';
@@ -61,6 +61,68 @@ describe('PersonCard – compact variant (default)', () => {
   it('derives the display name from firstName + lastName when fullName is absent', () => {
     render(<PersonCard collaborator={{ ...collab, fullName: undefined }} department={dept} />);
     expect(screen.getByText('Jean Moreau')).toBeInTheDocument();
+  });
+});
+
+describe('PersonCard — image preload and fallback', () => {
+  let originalImage: any;
+
+  beforeEach(() => {
+    originalImage = (global as any).Image;
+  });
+
+  afterEach(() => {
+    (global as any).Image = originalImage;
+  });
+
+  it('shows the image when preload succeeds', async () => {
+    let behavior: 'success' | 'error' = 'success';
+    class MockImage {
+      onload: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      _src = '';
+      set src(_v: string) {
+        this._src = _v;
+        setTimeout(() => {
+          if (behavior === 'success') {
+            this.onload && this.onload();
+          } else {
+            this.onerror && this.onerror();
+          }
+        }, 0);
+      }
+    }
+    (global as any).Image = MockImage;
+
+    render(<PersonCard collaborator={collab} department={dept} />);
+    const img = await waitFor(() => screen.getByAltText('Jean Moreau') as HTMLImageElement);
+    await waitFor(() => expect(img.className).not.toContain('hidden'));
+  });
+
+  it('renders the fallback accent when preload fails', async () => {
+    let behavior: 'success' | 'error' = 'error';
+    class MockImage {
+      onload: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      _src = '';
+      set src(_v: string) {
+        this._src = _v;
+        setTimeout(() => {
+          if (behavior === 'success') {
+            this.onload && this.onload();
+          } else {
+            this.onerror && this.onerror();
+          }
+        }, 0);
+      }
+    }
+    (global as any).Image = MockImage;
+
+    const { container } = render(<PersonCard collaborator={collab} department={dept} />);
+    const img = await waitFor(() => screen.getByAltText('Jean Moreau') as HTMLImageElement);
+    await waitFor(() => expect(img.className).toContain('hidden'));
+    // fallback element uses department.colorClass (bg-green-600)
+    await waitFor(() => expect(container.querySelector('.bg-green-600')).toBeTruthy());
   });
 });
 

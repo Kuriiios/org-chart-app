@@ -4,6 +4,8 @@ import TopSearchBar from '../components/TopSearchBar';
 import ContextBar from '../components/ContextBar';
 import type { Department } from '../types/Department';
 import type { Collaborator } from '../types/Collaborator';
+import { useMsal } from '@azure/msal-react';
+import { loginRequest } from '../auth/authConfig';
 
 type ActiveView = 'overview' | 'carousel';
 
@@ -23,6 +25,24 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   children, departments, collaborators, selectedDepartmentId, onSelectDepartment,
   activeView, onChangeView, searchTerm, onSearchChange,
 }) => {
+  const { instance } = useMsal();
+  const activeAccount = instance.getActiveAccount();
+  
+  const handleLoginRedirect = () => {
+    instance
+      .loginRedirect({
+        ...loginRequest,
+        redirectUri: '/',
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const handleLogoutRedirect = () => {
+    instance.logoutPopup({
+      postLogoutRedirectUri: '/',
+    });
+    window.location.reload();
+  };
 
   const isOverview = activeView === 'overview';
 
@@ -37,7 +57,17 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       {/* ── Top bar ────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-20 flex items-center justify-between px-6 h-14 bg-white border-b border-slate-200 shrink-0">
         <span className="text-lg font-bold tracking-tight text-slate-900">Organigramme</span>
-        <TopSearchBar searchTerm={searchTerm} onSearchChange={onSearchChange} />
+        <div className="flex items-center gap-4">
+          <TopSearchBar searchTerm={searchTerm} onSearchChange={onSearchChange} />
+          <div>
+            {activeAccount ? (
+              <button className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" onClick={handleLogoutRedirect}>Logout</button>
+
+            ) : (
+              <button className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" onClick={handleLoginRedirect}>Login</button>
+            )}
+          </div>
+        </div>
       </header>
 
       {/* ── Context bar: view type + breadcrumb ───────────────────────────── */}
