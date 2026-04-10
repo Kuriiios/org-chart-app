@@ -14,7 +14,6 @@ type ActiveView = 'overview' | 'carousel';
 // App: top-level application
 // Manages the active view, selected-department, and modal state.
 function App() {
-
   const [departments] = useState<Department[]>(mockDepartments)
   const [collaborators] = useState<Collaborator[]>(mockCollaborators)
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<string | null>(null)
@@ -87,61 +86,61 @@ function App() {
   const modalDept = modalCollaborator?.departmentId ? (deptMap[modalCollaborator.departmentId] ?? null) : null
 
   return (
-      <AppLayout
-        departments={departments}
-        collaborators={collaborators}
-        selectedDepartmentId={selectedDepartmentId}
-        onSelectDepartment={setSelectedDepartmentId}
-        activeView={activeView}
-        onChangeView={setActiveView}
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-      >
-        <div className="w-full h-full max-w-full max-h-full min-h-0">
-          {activeView === 'overview' ? (
-            // ── Tree view (whole company OR sub-team) ──────────────────────────────
-            <div className="w-full h-full max-w-full max-h-full min-h-0">
-            
-              <OrgOverviewView
-                collaborators={collaboratorsToShow}
-                collabMap={collabMap}
-                deptMap={deptMap}
-                onSelectCollaborator={openModal}
-              />
-            </div>
-          ) : (
-            // ── Carousel grid (whole company OR sub-team) ─────────────────────────
-            <div>
-              {!selectedDept && (
-                <>
-                  <h1 className="text-2xl text-center font-bold text-slate-900 mb-1">Bienvenue</h1>
-                  <h2 className="text-lg text-center font-semibold text-slate-700 mb-4">
-                    Decouvrez nos collaborateurs
-                  </h2>
-                  <p className="text-sm text-slate-500 mb-6">
-                    {collaboratorsToShow.length} collaborateur{collaboratorsToShow.length !== 1 ? 's' : ''}
-                  </p>
-                </>
-              )}
-              <OrgCarouselView
-                collaborators={collaboratorsToShow}
-                deptMap={deptMap}
-                onSelectCollaborator={openModal}
-              />
-            </div>
-          )}
-        </div>
-        {/* Profile modal — rendered at App level so it can access all data */}
-        <ProfileModal
-          collaborator={modalCollaborator}
-          manager={modalManager}
-          directReports={modalDirectReports}
-          department={modalDept}
-          isOpen={modalCollaboratorId !== null}
-          onClose={closeModal}
-          onSelectCollaborator={openModal}
-        />
-      </AppLayout>
+    <AppLayout
+      departments={departments}
+      collaborators={collaborators}
+      selectedDepartmentId={selectedDepartmentId}
+      onSelectDepartment={setSelectedDepartmentId}
+      activeView={activeView}
+      onChangeView={setActiveView}
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
+    >
+      <div className="w-full h-full max-w-full max-h-full min-h-0">
+        {activeView === 'overview' ? (
+          // ── Tree view (whole company OR sub-team) ──────────────────────────────
+          <div className="w-full h-full max-w-full max-h-full min-h-0">
+          
+            <OrgOverviewView
+              collaborators={collaboratorsToShow}
+              collabMap={collabMap}
+              deptMap={deptMap}
+              onSelectCollaborator={openModal}
+            />
+          </div>
+        ) : (
+          // ── Carousel grid (whole company OR sub-team) ─────────────────────────
+          <div>
+            {!selectedDept && (
+              <>
+                <h1 className="text-2xl text-center font-bold text-slate-900 mb-1">Bienvenue</h1>
+                <h2 className="text-lg text-center font-semibold text-slate-700 mb-4">
+                  Decouvrez nos collaborateurs
+                </h2>
+                <p className="text-sm text-slate-500 mb-6">
+                  {collaboratorsToShow.length} collaborateur{collaboratorsToShow.length !== 1 ? 's' : ''}
+                </p>
+              </>
+            )}
+            <OrgCarouselView
+              collaborators={collaboratorsToShow}
+              deptMap={deptMap}
+              onSelectCollaborator={openModal}
+            />
+          </div>
+        )}
+      </div>
+      {/* Profile modal — rendered at App level so it can access all data */}
+      <ProfileModal
+        collaborator={modalCollaborator}
+        manager={modalManager}
+        directReports={modalDirectReports}
+        department={modalDept}
+        isOpen={modalCollaboratorId !== null}
+        onClose={closeModal}
+        onSelectCollaborator={openModal}
+      />
+    </AppLayout>
   )
 }
 

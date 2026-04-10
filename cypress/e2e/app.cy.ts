@@ -60,9 +60,9 @@ describe('Sidebar navigation', () => {
     cy.get('[data-testid="org-tree"], .rst__tree, svg, [class*="Tree"]').should('exist');
   });
 
-  it('switches back to carousel view when "Carrousel" is clicked', () => {
+  it('switches back to carousel view when "Accueil" is clicked', () => {
     cy.contains("Vue d'ensemble").click();
-    cy.contains('Carrousel').click();
+    cy.contains('Accueil').click();
     cy.contains('Bienvenue').should('be.visible');
   });
 

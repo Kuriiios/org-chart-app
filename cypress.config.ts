@@ -2,9 +2,9 @@ import { defineConfig } from 'cypress';
 
 export default defineConfig({
   e2e: {
-    // vite preview serves the production build on 4173 — used in both CI and local runs.
+    // vite preview serves the production build on 5173 — used in both CI and local runs.
     // Start the server first: `npm run build && npm run preview`
-    baseUrl: 'http://localhost:4173',
+    baseUrl: 'http://localhost:5173',
     specPattern: 'cypress/e2e/**/*.cy.ts',
     supportFile: 'cypress/support/e2e.ts',
     video: true,

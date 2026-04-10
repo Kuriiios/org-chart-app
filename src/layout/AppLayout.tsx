@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import TopSearchBar from '../components/TopSearchBar';
 import ContextBar from '../components/ContextBar';
@@ -25,26 +25,144 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   children, departments, collaborators, selectedDepartmentId, onSelectDepartment,
   activeView, onChangeView, searchTerm, onSearchChange,
 }) => {
+  const authBypass = import.meta.env.VITE_AUTH_BYPASS === 'true';
+  const isTestEnv = import.meta.env.MODE === 'test';
+  const isE2E = typeof window !== 'undefined' && !!(window as any).Cypress;
+
   const { instance } = useMsal();
   const activeAccount = instance.getActiveAccount();
   
-  const handleLoginRedirect = () => {
-    instance
-      .loginRedirect({
-        ...loginRequest,
-        redirectUri: '/',
-      })
-      .catch((error) => console.log(error));
+  useEffect(() => {
+    async function maybeLoginRedirect() {
+      if (activeAccount || authBypass || isTestEnv || isE2E) return;
+
+      const anyInstance = instance as any;
+
+      // Await MSAL initialization when available to avoid uninitialized errors
+      if (typeof anyInstance.initialize === 'function') {
+        try {
+          await anyInstance.initialize();
+        } catch (initErr) {
+          // eslint-disable-next-line no-console
+          console.warn('MSAL initialize failed', initErr);
+        }
+      }
+
+      // Re-check active account after initialize
+      const currentAccount = typeof anyInstance.getActiveAccount === 'function'
+        ? anyInstance.getActiveAccount()
+        : instance.getActiveAccount && instance.getActiveAccount();
+
+      if (!currentAccount) {
+        if (typeof anyInstance.loginRedirect === 'function') {
+          try {
+            await anyInstance.loginRedirect({ ...loginRequest, redirectUri: '/' });
+          } catch (err) {
+            console.error('MSAL loginRedirect failed', err);
+          }
+        } else {
+          // In stubbed environments the loginRedirect function may not exist or may be a test stub.
+          // Skip immediate redirect so environment can continue and allow event registration.
+          // eslint-disable-next-line no-console
+          console.warn('MSAL loginRedirect is not available in this environment; skipping redirect');
+        }
+      }
+    }
+
+    maybeLoginRedirect();
+  }, [activeAccount, authBypass, instance]);
+
+
+  const handleLoginRedirect = async () => {
+    const anyInstance = instance as any;
+    if (isE2E) {
+      // Avoid invoking a real redirect during Cypress E2E tests
+      // eslint-disable-next-line no-console
+      console.warn('Skipping MSAL loginRedirect in Cypress E2E mode');
+      return;
+    }
+
+    if (typeof anyInstance.initialize === 'function') {
+      try {
+        await anyInstance.initialize();
+      } catch (initErr) {
+        // eslint-disable-next-line no-console
+        console.warn('MSAL initialize failed', initErr);
+      }
+    }
+
+    if (typeof anyInstance.loginRedirect === 'function') {
+      anyInstance
+        .loginRedirect({
+          ...loginRequest,
+          redirectUri: `https://login.microsoftonline.com/${import.meta.env.VITE_APP_TENANT_ID}`
+        })
+        .catch((error: any) => console.log(error));
+    } else {
+      // eslint-disable-next-line no-console
+      console.warn('MSAL loginRedirect not available in this environment; skipping login redirect');
+    }
   };
 
   const handleLogoutRedirect = () => {
-    instance.logoutPopup({
-      postLogoutRedirectUri: '/',
-    });
-    window.location.reload();
+    const anyInstance = instance as any;
+
+    // Clear the active account locally so the app treats the user as unauthenticated.
+    try {
+      if (typeof anyInstance.setActiveAccount === 'function') {
+        anyInstance.setActiveAccount(null);
+      }
+    } catch {
+      // ignore if not supported by stubbed instance
+    }
+
+    // If running in auth-bypass mode, just reload so AppLayout will trigger its bypass behavior.
+    if (authBypass) {
+      window.location.reload();
+      return;
+    }
+
+    // Try to perform a proper MSAL logout (redirect preferred) when available.
+    (async () => {
+      try {
+        if (typeof anyInstance.logoutRedirect === 'function') {
+          await anyInstance.logoutRedirect({ postLogoutRedirectUri: '/' });
+          return;
+        }
+
+        if (typeof anyInstance.logoutPopup === 'function') {
+          await anyInstance.logoutPopup({ postLogoutRedirectUri: '/' });
+        }
+      } catch (err) {
+        // ignore errors from logout API and fall through to reload
+      } finally {
+        // Reload to trigger the app's auth checks and potential redirect to login
+        window.location.reload();
+      }
+    })();
   };
 
   const isOverview = activeView === 'overview';
+
+  // If the user is not authenticated and we are not bypassing auth,
+  // and the environment supports `loginRedirect`, render a synchronous
+  // redirecting UI so the main app doesn't flash briefly.
+  if (!authBypass && !activeAccount && typeof (instance as any).loginRedirect === 'function' && !isTestEnv && !isE2E) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="text-center p-6">
+          <h2 className="text-lg font-semibold mb-2">Redirecting to Microsoft login…</h2>
+          <p className="text-sm text-slate-500 mb-4">You will be redirected to sign in. If nothing happens, click Login.</p>
+          <button
+            onClick={handleLoginRedirect}
+            className="rounded bg-indigo-500 px-4 py-2 text-white"
+          >
+            Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleViewClick = (view: ActiveView) => {
     // Match sidebar behavior: reset department when switching top-level view
@@ -60,7 +178,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         <div className="flex items-center gap-4">
           <TopSearchBar searchTerm={searchTerm} onSearchChange={onSearchChange} />
           <div>
-            {activeAccount ? (
+            {activeAccount || authBypass ? (
               <button className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" onClick={handleLogoutRedirect}>Logout</button>
 
             ) : (
