@@ -1,7 +1,7 @@
 ############################
 # Base: install dependencies
 ############################
-FROM node:22-alpine AS base
+FROM node:24-alpine AS base
 WORKDIR /app
 
 # Only copy what we need to install deps
