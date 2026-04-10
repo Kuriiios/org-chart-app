@@ -1,25 +1,10 @@
 services:
-  frontend-dev:
+  frontend:
     build:
       context: .
-      target: development
+      dockerfile: Dockerfile
     ports:
-      - "5173:5173"
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO /dev/null http://127.0.0.1/ || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
-
-  frontend-prod:
-    profiles: [prod]
-    build:
-      context: .
-      target: production
-    ports:
-      - "8080:8080"
+      - "8080:80"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "wget -qO /dev/null http://127.0.0.1/ || exit 1"]
@@ -33,7 +18,7 @@ services:
     image: cypress/included:latest
     working_dir: /e2e
     environment:
-      - CYPRESS_BASE_URL=http://frontend-prod
+      - CYPRESS_BASE_URL=http://frontend
     volumes:
       - ./cypress:/e2e/cypress:rw
       - ./cypress.config.ts:/e2e/cypress.config.ts:ro
@@ -41,7 +26,7 @@ services:
       - cypress_videos:/e2e/cypress/videos
       - cypress_screenshots:/e2e/cypress/screenshots
     depends_on:
-      frontend-prod:
+      frontend:
         condition: service_healthy
 
   gitleaks:

@@ -20,7 +20,7 @@ import { LogLevel } from '@azure/msal-common';
     },
     system: {
         loggerOptions: {
-            loggerCallback: (level: any, message: any, containsPii: any) => {
+            loggerCallback: (level: LogLevel, message: string, containsPii: boolean) => {
                 if (containsPii) {
                     return;
                 }

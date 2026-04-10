@@ -9,20 +9,6 @@ COPY package.json ./
 RUN npm install
 
 ############################
-# Development: run Vite dev server
-############################
-FROM base AS development
-
-# Copy the rest of the source code
-COPY . .
-
-# Expose Vite default port
-EXPOSE 5173
-
-# Run dev server; Vite will bind to 0.0.0.0 if configured in package.json
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
-
-############################
 # Build: create production bundle
 ############################
 FROM base AS build
@@ -38,7 +24,7 @@ FROM nginx:stable-alpine AS production
 # Copy built assets from build stage
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Nginx listens on 80 inside the container
+# Nginx listens on 8080 inside the container
 EXPOSE 8080
 
 CMD ["nginx", "-g", "daemon off;"]
