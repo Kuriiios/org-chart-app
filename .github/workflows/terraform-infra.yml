@@ -1,0 +1,68 @@
+name: Terraform - Infra
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+  pull_request:
+    paths:
+      - 'terraform/**'
+
+jobs:
+  bootstrap:
+    name: Bootstrap backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Create backend resource group
+        run: az group create --name ${{ secrets.TF_BACKEND_RG }} --location ${{ secrets.AZURE_LOCATION }}
+
+      - name: Create backend storage account
+        run: |
+          az storage account create \
+            --name ${{ secrets.TF_BACKEND_STORAGE_ACCOUNT }} \
+            --resource-group ${{ secrets.TF_BACKEND_RG }} \
+            --location ${{ secrets.AZURE_LOCATION }} \
+            --sku Standard_LRS \
+            --kind StorageV2 \
+            --https-only true
+
+      - name: Create tfstate container
+        run: az storage container create --name ${{ secrets.TF_BACKEND_CONTAINER }} --account-name ${{ secrets.TF_BACKEND_STORAGE_ACCOUNT }} --auth-mode login
+
+  terraform:
+    needs: bootstrap
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.8
+
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init -backend-config="resource_group_name=${{ secrets.TF_BACKEND_RG }}" -backend-config="storage_account_name=${{ secrets.TF_BACKEND_STORAGE_ACCOUNT }}" -backend-config="container_name=${{ secrets.TF_BACKEND_CONTAINER }}" -backend-config="key=orgchart-app.tfstate"
+
+      - name: Terraform Validate
+        working-directory: terraform
+        run: terraform validate
+
+      - name: Terraform Plan (PRs)
+        if: github.event_name == 'pull_request'
+        working-directory: terraform
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply (main branch)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        working-directory: terraform
+        run: terraform apply -auto-approve
